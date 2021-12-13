@@ -559,6 +559,9 @@ final class NullSpecVisitor extends BaseTypeVisitor<NullSpecAnnotatedTypeFactory
      * to skip all expensive work, so we must also override preProcessClassTree in
      * NullSpecAnnotatedTypeFactory.
      */
+    //    if (!tree.getSimpleName().contentEquals("Throwables")) {
+    //      return;
+    //    }
     if (util.hasSuppressWarningsNullness(tree.getModifiers().getAnnotations())) {
       return;
     }
