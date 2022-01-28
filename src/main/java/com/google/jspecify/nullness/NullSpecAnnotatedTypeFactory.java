@@ -578,15 +578,13 @@ final class NullSpecAnnotatedTypeFactory
   }
 
   private List<? extends AnnotatedTypeMirror> getUpperBounds(AnnotatedTypeMirror type) {
-    // TODO(cpovirk): Would the following be worthwhile? It helps us produce a few warnings that we
-    // should and at no apparent cost. But I'm wondering if I remember something like this before
-    // that I decided was giving the right results for the wrong reasons and thus I decided not to
-    // do it?
-    //    if (type instanceof AnnotatedTypeVariable &&
-    // !isCapturedTypeVariable(type.getUnderlyingType())) {
-    //      AnnotatedTypeVariable variable = (AnnotatedTypeVariable) type;
-    //      type = getAnnotatedType(variable.getUnderlyingType().asElement());
-    //    }
+    // TODO(cpovirk): why?? this helps with at least the AtomicReference cases, but... why? also,
+    // did I use to have reservations about this?
+    if (type instanceof AnnotatedTypeVariable
+        && !isCapturedTypeVariable(type.getUnderlyingType())) {
+      AnnotatedTypeVariable variable = (AnnotatedTypeVariable) type;
+      type = getAnnotatedType(variable.getUnderlyingType().asElement());
+    }
     String method = enter("getUpperBounds(%s)", type);
     switch (type.getKind()) {
       case INTERSECTION:
@@ -1749,7 +1747,10 @@ final class NullSpecAnnotatedTypeFactory
            */
           return type.hasAnnotation(unionNull)
               ? "?"
-              : type.hasAnnotation(nullnessOperatorUnspecified) ? "*" : "";
+              : type.hasAnnotation(nullnessOperatorUnspecified)
+                  ? "*"
+                  // TODO(cpovirk): revert!
+                  : type.hasAnnotation(minusNull) ? "!!" : "";
         }
 
         Name simpleName(AnnotatedDeclaredType type) {
