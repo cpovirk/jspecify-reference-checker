@@ -948,6 +948,9 @@ final class NullSpecAnnotatedTypeFactory
              *
              * (But I haven't been able to reproduce this in a smaller test.)
              *
+             * (Could this be related to
+             * https://github.com/typetools/checker-framework/issues/5042?)
+             *
              * Fortunately, I think the workaround is harmless:
              * TypeFromExpressionVisitor.visitConditionalExpression calls getAnnotatedType on both
              * candidate expressions, and getAnnotatedType applies dataflow. So the ternary should
@@ -1750,7 +1753,9 @@ final class NullSpecAnnotatedTypeFactory
               : type.hasAnnotation(nullnessOperatorUnspecified)
                   ? "*"
                   // TODO(cpovirk): revert!
-                  : type.hasAnnotation(minusNull) ? "!!" : "";
+                  : type.hasAnnotation(minusNull) ? "!!"
+                  //
+                  : "";
         }
 
         Name simpleName(AnnotatedDeclaredType type) {
